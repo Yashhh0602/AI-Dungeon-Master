@@ -10,7 +10,8 @@ class GameStateManager:
 
     def __init__(self, db_path: str = "game saves.db"):
         self.db_path = db_path
-        self._init_db()
+        import asyncio
+        asyncio.get_event_loop().run_until_complete(self._init_db())
 
     async def _init_db(self):
         """Initialize database tables"""
@@ -36,10 +37,8 @@ class GameStateManager:
         """Create a new game session"""
         game_id = str(uuid.uuid4())
 
-        # Initialize character with full RPG stats
         character_data = self._generate_character(character_name, character_class, background)
 
-        # Initialize world state
         world_state = {
             "location": "Starting Area",
             "in_combat": False,
@@ -68,7 +67,6 @@ class GameStateManager:
 
     def _generate_character(self, name: str, char_class: str, background: str) -> dict:
         """Generate character stats based on class"""
-        # Base stats
         base_stats = {
             "warrior": {"str": 16, "dex": 12, "con": 15, "int": 10, "wis": 11, "cha": 10},
             "rogue": {"str": 10, "dex": 16, "con": 12, "int": 13, "wis": 11, "cha": 12},
@@ -78,9 +76,8 @@ class GameStateManager:
 
         stats = base_stats.get(char_class.lower(), base_stats["warrior"])
 
-        # Calculate derived stats
         con_mod = (stats["con"] - 10) // 2
-        max_hp = 10 + con_mod  # Level 1 HP
+        max_hp = 10 + con_mod
 
         return {
             "name": name,
@@ -98,7 +95,6 @@ class GameStateManager:
         }
 
     def _get_starting_equipment(self, char_class: str) -> list:
-        """Get starting equipment based on class"""
         equipment = {
             "warrior": ["Longsword", "Chain Mail", "Shield", "Backpack"],
             "rogue": ["Shortsword", "Dagger", "Leather Armor", "Thieves' Tools", "Backpack"],
@@ -108,7 +104,6 @@ class GameStateManager:
         return equipment.get(char_class.lower(), equipment["warrior"])
 
     def _get_starting_skills(self, char_class: str) -> list:
-        """Get starting skills based on class"""
         skills = {
             "warrior": ["Slash", "Defend", "Second Wind"],
             "rogue": ["Backstab", "Hide", "Pick Lock"],
@@ -141,7 +136,12 @@ class GameStateManager:
         current = await self.get_game_state(game_id)
 
         if "character" in updates:
-            current["character"].update(updates["character"])
+            for key, value in updates["character"].items():
+                # ✅ FIX: Add/subtract numeric values instead of overwriting
+                if isinstance(value, (int, float)) and key in ["hp", "gold", "xp"]:
+                    current["character"][key] = max(0, current["character"][key] + value)
+                else:
+                    current["character"][key] = value
 
         if "world" in updates:
             current["world"].update(updates["world"])

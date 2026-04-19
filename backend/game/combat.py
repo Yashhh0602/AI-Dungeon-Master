@@ -1,5 +1,5 @@
 import random
-from typing import dict
+from typing import Dict, List, Optional, Tuple
 
 
 class CombatSystem:

@@ -37,6 +37,7 @@ class NewGameRequest(BaseModel):
 
 
 class GameResponse(BaseModel):
+    game_id: Optional[str] = None
     narration: str
     game_state: dict
 
@@ -50,7 +51,6 @@ async def new_game(request: NewGameRequest) -> GameResponse:
         background=request.background
     )
 
-    # Get opening narration from AI
     narration = await dungeon_master.get_opening_narration(
         character_name=request.character_name,
         character_class=request.character_class,
@@ -59,19 +59,17 @@ async def new_game(request: NewGameRequest) -> GameResponse:
 
     game_state = await state_manager.get_game_state(game_id)
 
-    return GameResponse(narration=narration, game_state=game_state)
+    return GameResponse(game_id=game_id, narration=narration, game_state=game_state)
 
 
 @app.post("/game/action")
 async def player_action(request: PlayerAction) -> GameResponse:
     """Process a player action"""
-    # Get current game state
     game_state = await state_manager.get_game_state(request.game_id)
 
     if not game_state:
         raise HTTPException(status_code=404, detail="Game not found")
 
-    # Check if in combat
     if game_state.get("in_combat", False):
         combat_result = await combat_system.resolve_action(
             game_state=game_state,
@@ -86,13 +84,11 @@ async def player_action(request: PlayerAction) -> GameResponse:
 
         narration = combat_result.get("narration", "")
     else:
-        # Normal action - get AI response
         narration = await dungeon_master.process_action(
             game_state=game_state,
             player_action=request.action
         )
 
-        # Parse and update game state based on AI response
         updates = await dungeon_master.parse_state_updates(narration)
         if updates:
             game_state = await state_manager.update_game_state(
@@ -102,7 +98,7 @@ async def player_action(request: PlayerAction) -> GameResponse:
 
     game_state = await state_manager.get_game_state(request.game_id)
 
-    return GameResponse(narration=narration, game_state=game_state)
+    return GameResponse(game_id=request.game_id, narration=narration, game_state=game_state)
 
 
 @app.get("/game/{game_id}")

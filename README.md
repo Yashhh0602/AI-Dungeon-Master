@@ -1,29 +1,32 @@
 # AI Dungeon Master
 
-A fantasy RPG adventure game powered by Claude AI. Explore a dynamic world, fight monsters, collect loot, and shape your own story with an AI Dungeon Master that responds to your choices.
+A fantasy RPG adventure game powered by AI. Explore a dynamic world, fight monsters, collect loot, and shape your own story with an AI Dungeon Master that responds to your choices.
 
-![AI Dungeon Master](https://img.shields.io/badge/React-18-blue?logo=react)
+![AI Dungeon Master](https://img.shields.io/badge/React-19-blue?logo=react)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.109-green?logo=fastapi)
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
+![Ollama](https://img.shields.io/badge/Ollama-llama3.2-orange?logo=ollama)
 
 ## Features
 
-- **AI-Powered Dungeon Master**: Claude AI narrates your adventure, reacts to your choices, and creates dynamic storylines
+- **AI-Powered Dungeon Master**: Local LLM (Ollama/llama3.2) narrates your adventure and creates dynamic storylines
 - **Full RPG Character System**: Choose from 4 classes (Warrior, Rogue, Mage, Cleric), each with unique stats, skills, and equipment
 - **Turn-Based Combat**: Strategic combat with dice rolls, skill checks, and enemy AI
-- **Persistent Game State**: Your progress is saved automatically - continue your adventure anytime
+- **Persistent Game State**: Your progress is saved automatically using SQLite
 - **Responsive Web UI**: Clean, dark-themed interface with real-time chat and character panel
+- **100% Local & Free**: No API costs - runs entirely on your machine
 
 ## Tech Stack
 
 ### Backend
 - **FastAPI** - Modern Python web framework
-- **Anthropic SDK** - Claude AI integration
+- **Ollama** - Local LLM runtime (llama3.2 model)
 - **SQLite** - Persistent game state storage
-- **AsyncIO** - Async operations for responsive API
+- **httpx** - Async HTTP client for Ollama API
+- **aiosqlite** - Async SQLite operations
 
 ### Frontend
-- **React 18** with TypeScript
+- **React 19** with TypeScript
 - **Axios** - API communication
 - **CSS3** - Custom dark fantasy theme
 
@@ -32,7 +35,16 @@ A fantasy RPG adventure game powered by Claude AI. Explore a dynamic world, figh
 ### Prerequisites
 - Python 3.10+
 - Node.js 18+
-- An Anthropic API key ([get one here](https://console.anthropic.com))
+- [Ollama](https://ollama.ai) installed and running
+
+### Install Ollama
+
+1. Download from [ollama.ai](https://ollama.ai)
+2. Install and start Ollama
+3. Pull the model:
+   ```bash
+   ollama pull llama3.2
+   ```
 
 ### Backend Setup
 
@@ -50,13 +62,6 @@ source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
-
-# Set your API key
-copy .env.example .env  # Windows
-# or
-cp .env.example .env    # macOS/Linux
-
-# Edit .env and add your ANTHROPIC_API_KEY
 
 # Run the server
 python main.py
@@ -102,7 +107,7 @@ ai-dungeon-master/
 │   ├── main.py              # FastAPI server
 │   ├── game/
 │   │   ├── state.py         # Game state management (SQLite)
-│   │   ├── dungeon_master.py # AI DM integration
+│   │   ├── dungeon_master.py # AI DM integration (Ollama)
 │   │   └── combat.py        # Combat system
 │   └── requirements.txt
 ├── frontend/
@@ -138,6 +143,7 @@ ai-dungeon-master/
 - **New Enemies**: Add to `backend/game/combat.py` in the `enemies` dict
 - **New Skills**: Add to `backend/game/state.py` in `_get_starting_skills()`
 - **New Classes**: Add stats to `_generate_character()` and equipment to `_get_starting_equipment()`
+- **Different AI Model**: Change `self.model` in `dungeon_master.py` to any Ollama model
 
 ### Running Tests
 
@@ -152,8 +158,12 @@ npm test
 
 ## Troubleshooting
 
+**Ollama not responding:**
+- Make sure Ollama is running: `ollama serve`
+- Verify the model is pulled: `ollama pull llama3.2`
+- Check Ollama is accessible at `http://localhost:11434`
+
 **Backend won't start:**
-- Ensure your API key is set in `.env`
 - Check that the virtual environment is activated
 - Verify port 8000 isn't in use
 
@@ -163,9 +173,9 @@ npm test
 - Verify the API_URL in `App.tsx`
 
 **AI responses are slow:**
-- This is normal - Claude takes a few seconds to generate responses
-- Check your internet connection
-- Verify your API key has available credits
+- Local LLMs depend on your hardware
+- First response may be slower due to model loading
+- Consider using a smaller model if needed
 
 ## License
 
@@ -173,5 +183,5 @@ MIT License - feel free to use this for your portfolio or learning!
 
 ## Acknowledgments
 
-- Built with [Claude](https://claude.ai) by Anthropic
+- Powered by [Ollama](https://ollama.ai) and llama3.2
 - Inspired by classic tabletop RPGs and text adventure games

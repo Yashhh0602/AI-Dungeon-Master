@@ -72,7 +72,8 @@ function App() {
         background: background
       });
 
-      setGameId(response.data.game_state.character.name ? crypto.randomUUID() : '');
+      // ✅ FIX: Use the actual game_id returned by the backend
+      setGameId(response.data.game_id);
       setGameState(response.data.game_state);
       setMessages([{
         text: response.data.narration,
@@ -106,10 +107,9 @@ function App() {
         action: playerAction
       });
 
-      // Update game ID if we got a proper state back
-      if (response.data.game_state.character) {
-        const actualGameId = response.data.game_state.character.name;
-        setGameId(actualGameId);
+      // ✅ FIX: Keep game_id from backend response, don't overwrite with character name
+      if (response.data.game_id) {
+        setGameId(response.data.game_id);
       }
 
       setGameState(response.data.game_state);
@@ -119,7 +119,6 @@ function App() {
         id: Date.now() + 1
       }]);
 
-      // Check for game over
       if (response.data.game_state.character.hp <= 0) {
         setPhase('gameover');
       }
@@ -204,6 +203,7 @@ function App() {
             setPhase('start');
             setMessages([]);
             setGameState(null);
+            setGameId('');
             setCharName('');
           }} className="start-btn">
             Start New Adventure

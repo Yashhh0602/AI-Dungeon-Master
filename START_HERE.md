@@ -2,22 +2,17 @@
 
 Follow these steps to run your AI Dungeon Master game:
 
-## Step 1: Get Your API Key
+## Step 1: Install Ollama
 
-1. Go to https://console.anthropic.com
-2. Sign up or log in
-3. Create an API key
-4. Copy the key
+1. Go to https://ollama.ai
+2. Download and install Ollama
+3. Open a terminal and pull the model:
+   ```bash
+   ollama pull llama3.2
+   ```
+4. Keep Ollama running in the background
 
-## Step 2: Configure Backend
-
-Open `backend\.env` and paste your API key:
-
-```
-ANTHROPIC_API_KEY=sk-ant-your-actual-key-here
-```
-
-## Step 3: Start the Backend
+## Step 2: Start the Backend
 
 Open a terminal in VS Code:
 
@@ -29,7 +24,7 @@ python main.py
 
 You should see: `Uvicorn running on http://0.0.0.0:8000`
 
-## Step 4: Start the Frontend
+## Step 3: Start the Frontend
 
 Open another terminal in VS Code:
 
@@ -40,7 +35,7 @@ npm start
 
 Your browser should open to `http://localhost:3000`
 
-## Step 5: Play!
+## Step 4: Play!
 
 1. Enter your character name
 2. Choose a class
@@ -54,12 +49,16 @@ Your browser should open to `http://localhost:3000`
 
 **Frontend says "Failed to start game"**
 - Make sure backend is running on port 8000
-- Check your API key is correct in `.env`
+- Check that Ollama is running
 
 **Backend won't start**
 - Run `pip install -r requirements.txt` again
 - Make sure virtual environment is activated
 
+**Ollama errors**
+- Make sure Ollama is running: `ollama serve`
+- Verify model is installed: `ollama pull llama3.2`
+
 **Game feels slow**
 - AI responses take 2-5 seconds - this is normal!
-- Check your internet connection
+- First response may be slower due to model loading

@@ -1,21 +1,19 @@
 import os
 import re
 import json
-from anthropic import AsyncAnthropic
+import httpx
 from dotenv import load_dotenv
 
 load_dotenv()
 
-
 class DungeonMaster:
-    """AI Dungeon Master using Claude API"""
+    """AI Dungeon Master using Ollama (local)"""
 
     def __init__(self):
-        self.client = AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-        self.model = "claude-sonnet-4-20250514"
+        self.ollama_url = "http://localhost:11434/api/chat"
+        self.model = "llama3.2"
 
     def _get_system_prompt(self) -> str:
-        """Return the core DM system prompt"""
         return """You are an expert Dungeon Master running a fantasy RPG adventure.
 
 STYLE GUIDELINES:
@@ -38,19 +36,36 @@ MECHANICS:
 
 FORMAT YOUR RESPONSE:
 1. First, narrate what happens in the story
-2. If game state changes, end with a STATE block like:
+2. If game state changes, end with a STATE block at the very end like:
    <STATE>{"hp": -5, "gold": 10}</STATE>
-   for simple numeric changes, or describe complex changes in text
 
-Remember: You're here to create a FUN, ENGAGING adventure. Be fair but don't shy away from consequences."""
+CRITICAL STATE RULES:
+- Always use valid JSON with double quotes around keys and string values
+- hp changes must be NEGATIVE for damage (e.g. -3 means lost 3 HP)
+- hp changes must be POSITIVE for healing (e.g. 5 means gained 5 HP)
+- gold changes are also deltas (e.g. -10 means spent 10 gold, 20 means earned 20 gold)
+- Never use backticks, single quotes, or any other formatting inside the STATE block
+- If no state changes occurred, do not include a STATE block at all
 
-    async def get_opening_narration(
-        self,
-        character_name: str,
-        character_class: str,
-        background: str
-    ) -> str:
-        """Generate the game's opening narration"""
+Remember: You're here to create a FUN, ENGAGING adventure."""
+
+    async def _call_ollama(self, system: str, user_prompt: str) -> str:
+        async with httpx.AsyncClient(timeout=300.0) as client:
+            response = await client.post(
+                self.ollama_url,
+                json={
+                    "model": self.model,
+                    "stream": False,
+                    "messages": [
+                        {"role": "system", "content": system},
+                        {"role": "user", "content": user_prompt}
+                    ]
+                }
+            )
+            data = response.json()
+            return data["message"]["content"]
+
+    async def get_opening_narration(self, character_name: str, character_class: str, background: str) -> str:
         prompt = f"""The player is starting a new game.
 
 CHARACTER:
@@ -61,21 +76,11 @@ CHARACTER:
 Create an atmospheric opening that:
 1. Sets the scene - where are they and what's happening
 2. Hints at adventure and danger
-3. Ends with presenting the first choice or situation to react to
+3. Ends with presenting the first choice or situation to react to"""
 
-Make it compelling and invite the player into the world."""
-
-        response = await self.client.messages.create(
-            model=self.model,
-            max_tokens=500,
-            system=self._get_system_prompt(),
-            messages=[{"role": "user", "content": prompt}]
-        )
-
-        return response.content[0].text
+        return await self._call_ollama(self._get_system_prompt(), prompt)
 
     async def process_action(self, game_state: dict, player_action: str) -> str:
-        """Process a player's action and return narration"""
         character = game_state.get("character", {})
         world = game_state.get("world", {})
 
@@ -89,26 +94,16 @@ Gold: {character.get('gold', 0)}
 
 PLAYER ACTION: {player_action}
 
-Respond to what the player wants to do. Consider:
-- Is this action risky? Call for a skill check
-- Does this lead to combat? Set up the encounter
-- Is this social? Create interesting NPC interaction
-- Is this exploration? Describe what they find
+Respond to what the player wants to do. If any stats change, end with a <STATE> block using delta values (negative for loss, positive for gain)."""
 
-Remember to end with <STATE> blocks for any mechanical changes."""
-
-        response = await self.client.messages.create(
-            model=self.model,
-            max_tokens=600,
-            system=self._get_system_prompt(),
-            messages=[{"role": "user", "content": prompt}]
-        )
-
-        return response.content[0].text
+        return await self._call_ollama(self._get_system_prompt(), prompt)
 
     async def parse_state_updates(self, narration: str) -> dict:
-        """Parse STATE blocks from AI narration into game updates"""
-        state_match = re.search(r'<STATE>\s*(\{[^}]+\})\s*</STATE>', narration)
+        # Clean up common Ollama formatting issues
+        cleaned = narration.replace('`', '').replace("'", '"')
+
+        # Match <STATE>{...}</STATE> or STATE{...} variants
+        state_match = re.search(r'<?\bSTATE\b>?\s*(\{.*?\})\s*<?\/?STATE>?', cleaned, re.DOTALL)
 
         if not state_match:
             return {}
@@ -117,11 +112,11 @@ Remember to end with <STATE> blocks for any mechanical changes."""
             state_changes = json.loads(state_match.group(1))
             updates = {"character": {}, "world": {}}
 
-            # Map simple numeric changes to character stats
-            simple_stats = ["hp", "gold", "xp", "level"]
             for key, value in state_changes.items():
-                if key in simple_stats:
+                if key in ["hp", "gold", "xp", "level"]:
                     updates["character"][key] = value
+                elif key in ["location", "in_combat"]:
+                    updates["world"][key] = value
 
             return updates if (updates["character"] or updates["world"]) else {}
 
