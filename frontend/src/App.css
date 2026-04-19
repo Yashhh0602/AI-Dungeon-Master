@@ -1,0 +1,399 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #1a1a2e;
+  color: #eee;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+/* Start Screen */
+.start-screen {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.start-screen h1 {
+  font-size: 2.5rem;
+  color: #f39c12;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #888;
+  margin-bottom: 40px;
+}
+
+.character-creation {
+  background: #16213e;
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid #333;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #f39c12;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: #0f0f23;
+  color: #eee;
+  font-size: 1rem;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.start-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #f39c12, #e74c3c);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.start-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+}
+
+.start-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Game Container */
+.game-container {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  height: 100vh;
+  gap: 0;
+}
+
+/* Main Chat Panel */
+.game-main {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.message {
+  margin-bottom: 20px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  max-width: 85%;
+  line-height: 1.5;
+}
+
+.message.dm {
+  background: #16213e;
+  border-left: 4px solid #f39c12;
+  margin-right: auto;
+}
+
+.message.player {
+  background: #0f3460;
+  border-right: 4px solid #3498db;
+  margin-left: auto;
+  text-align: right;
+}
+
+.message.loading {
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.input-area {
+  display: flex;
+  gap: 10px;
+  padding: 15px 20px;
+  background: #16213e;
+  border-top: 1px solid #333;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 12px 15px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: #0f0f23;
+  color: #eee;
+  font-size: 1rem;
+}
+
+.input-area button {
+  padding: 12px 25px;
+  background: #f39c12;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.input-area button:hover:not(:disabled) {
+  background: #e67e22;
+}
+
+.input-area button:disabled {
+  opacity: 0.5;
+}
+
+/* Sidebar */
+.sidebar {
+  background: #0f0f23;
+  border-left: 1px solid #333;
+  padding: 20px;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+.character-panel {
+  background: #16213e;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.character-panel h3 {
+  color: #f39c12;
+  margin: 0 0 5px 0;
+}
+
+.class-level {
+  color: #888;
+  margin-bottom: 15px;
+}
+
+.stat-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.stat-bar span:first-child {
+  width: 30px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.bar-container {
+  flex: 1;
+  height: 12px;
+  background: #0f0f23;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #27ae60;
+  transition: width 0.3s;
+}
+
+.bar-fill.enemy-fill {
+  background: #e74c3c;
+}
+
+.bar-fill.xp-fill {
+  background: #9b59b6;
+}
+
+.stat-bar span:last-child {
+  width: 50px;
+  text-align: right;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 15px 0;
+}
+
+.stat-item {
+  background: #0f0f23;
+  padding: 8px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.7rem;
+  color: #888;
+}
+
+.stat-value {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #f39c12;
+}
+
+.gold-display {
+  text-align: center;
+  padding: 10px;
+  background: #0f0f23;
+  border-radius: 4px;
+  color: #f1c40f;
+}
+
+/* Inventory Panel */
+.inventory-panel {
+  background: #16213e;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.inventory-panel h4 {
+  color: #f39c12;
+  margin: 0 0 10px 0;
+  font-size: 0.95rem;
+}
+
+.inventory-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 15px 0;
+}
+
+.inventory-panel li {
+  padding: 5px 0;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #333;
+}
+
+.inventory-panel li:last-child {
+  border-bottom: none;
+}
+
+/* Combat Panel */
+.combat-panel {
+  background: linear-gradient(135deg, #4a0000, #2a0000);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 2px solid #e74c3c;
+}
+
+.combat-panel h4 {
+  color: #e74c3c;
+  margin: 0 0 10px 0;
+}
+
+.enemy-stat {
+  margin-top: 10px;
+}
+
+/* Location Panel */
+.location-panel {
+  background: #16213e;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.location-panel h4 {
+  color: #f39c12;
+  margin: 0 0 10px 0;
+}
+
+.location-panel p {
+  margin: 0;
+  color: #888;
+}
+
+/* Game Over Screen */
+.gameover-screen {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.gameover-screen h1 {
+  color: #e74c3c;
+  font-size: 2.5rem;
+}
+
+.gameover-screen p {
+  color: #888;
+  margin-bottom: 30px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f0f23;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .game-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+  }
+
+  .sidebar {
+    max-height: none;
+    border-left: none;
+    border-top: 1px solid #333;
+  }
+}
