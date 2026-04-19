@@ -44,6 +44,9 @@ interface Message {
 
 type GamePhase = 'start' | 'playing' | 'gameover';
 
+// Generate random particles for background
+const particles = Array.from({ length: 19 }, (_, i) => i);
+
 function App() {
   const [phase, setPhase] = useState<GamePhase>('start');
   const [gameId, setGameId] = useState<string>('');
@@ -143,6 +146,12 @@ function App() {
   if (phase === 'start') {
     return (
       <div className="App">
+        <div className="bg-animation">
+          {particles.map((i) => (
+            <div key={i} className="particle" />
+          ))}
+        </div>
+        <div className="fog" />
         <div className="start-screen">
           <h1>AI Dungeon Master</h1>
           <p className="subtitle">A Fantasy RPG Adventure</p>
@@ -196,6 +205,12 @@ function App() {
   if (phase === 'gameover') {
     return (
       <div className="App">
+        <div className="bg-animation">
+          {particles.map((i) => (
+            <div key={i} className="particle" />
+          ))}
+        </div>
+        <div className="fog" />
         <div className="gameover-screen">
           <h1>You Have Fallen</h1>
           <p>Your adventure has come to an end...</p>
@@ -215,6 +230,12 @@ function App() {
 
   return (
     <div className="App game-container">
+      <div className="bg-animation">
+        {particles.map((i) => (
+          <div key={i} className="particle" />
+        ))}
+      </div>
+      <div className="fog" />
       <div className="game-main">
         <div className="chat-panel">
           <div className="messages-container">
