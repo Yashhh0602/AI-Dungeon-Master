@@ -1,3 +1,4 @@
+<img width="1919" height="929" alt="Screenshot 2026-04-20 051905" src="https://github.com/user-attachments/assets/66eaba64-3d5d-4ae2-b544-699d580f3a2d" />
 <img width="1918" height="932" alt="waiting_reply" src="https://github.com/user-attachments/assets/53c6d9ef-f8d0-4fea-9524-dff713f2dbd2" />
 
 # AI Dungeon Master
