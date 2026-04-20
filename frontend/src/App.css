@@ -10,6 +10,673 @@ body {
   overflow-x: hidden;
 }
 
+/* Warriors Faceoff - Realistic Knights */
+.warriors-faceoff {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.warrior {
+  position: relative;
+  width: 280px;
+  height: 400px;
+  transition: transform 0.3s ease-out;
+}
+
+.warrior-left {
+  transform: translateX(-220px) scaleX(-1);
+  animation: warrior-breathe-left 4s ease-in-out infinite;
+}
+
+.warrior-right {
+  transform: translateX(220px);
+  animation: warrior-breathe-right 4s ease-in-out infinite;
+}
+
+/* When typing, warriors lean in to watch */
+.warrior-left.watching {
+  transform: translateX(-160px) scaleX(-1);
+  animation: warrior-watch-left 0.5s ease-out forwards;
+}
+
+.warrior-right.watching {
+  transform: translateX(160px);
+  animation: warrior-watch-right 0.5s ease-out forwards;
+}
+
+@keyframes warrior-breathe-left {
+  0%, 100% {
+    transform: translateX(-220px) scaleX(-1) rotateY(0deg);
+  }
+  50% {
+    transform: translateX(-210px) scaleX(-1) rotateY(5deg);
+  }
+}
+
+@keyframes warrior-breathe-right {
+  0%, 100% {
+    transform: translateX(220px) rotateY(0deg);
+  }
+  50% {
+    transform: translateX(210px) rotateY(-5deg);
+  }
+}
+
+@keyframes warrior-watch-left {
+  0% {
+    transform: translateX(-220px) scaleX(-1);
+  }
+  100% {
+    transform: translateX(-160px) scaleX(-1) rotateY(10deg);
+  }
+}
+
+@keyframes warrior-watch-right {
+  0% {
+    transform: translateX(220px);
+  }
+  100% {
+    transform: translateX(160px) rotateY(-10deg);
+  }
+}
+
+.warrior-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Realistic Warrior Head */
+.warrior-head {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 85px;
+  z-index: 10;
+  animation: head-look-left 5s ease-in-out infinite;
+}
+
+.warrior-right .warrior-head {
+  animation: head-look-right 5s ease-in-out infinite;
+}
+
+.warrior-left.watching .warrior-head {
+  animation: head-watch 0.5s ease-out forwards;
+}
+
+.warrior-right.watching .warrior-head {
+  animation: head-watch-right 0.5s ease-out forwards;
+}
+
+/* Torch light effect on warriors */
+.warrior::before {
+  content: '';
+  position: absolute;
+  top: 100px;
+  left: -100px;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(243, 156, 18, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: torch-flicker 2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.warrior-right::before {
+  left: auto;
+  right: -100px;
+}
+
+@keyframes torch-flicker {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1) translateX(0);
+  }
+  25% {
+    opacity: 0.6;
+    transform: scale(1.1) translateX(5px);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(0.95) translateX(-3px);
+  }
+  75% {
+    opacity: 0.7;
+    transform: scale(1.05) translateX(2px);
+  }
+}
+
+/* Armor metallic shine */
+.warrior-torso::before,
+.warrior-helmet,
+.warrior-shoulder {
+  position: relative;
+  overflow: hidden;
+}
+
+.warrior-torso::before::after,
+.warrior-helmet::after,
+.warrior-shoulder::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%);
+  animation: armor-shine 3s ease-in-out infinite;
+}
+
+.warrior-helmet::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%);
+  animation: helmet-shine 3s ease-in-out infinite;
+}
+
+@keyframes armor-shine {
+  0%, 100% { left: -100%; }
+  50% { left: 200%; }
+}
+
+@keyframes helmet-shine {
+  0%, 100% { left: -100%; }
+  50% { left: 200%; }
+}
+
+@keyframes head-look-left {
+  0%, 100% { transform: translateX(-50%) rotateY(0deg) tiltY(0deg); }
+  25% { transform: translateX(-52%) rotateY(3deg); }
+  75% { transform: translateX(-48%) rotateY(-3deg); }
+}
+
+@keyframes head-look-right {
+  0%, 100% { transform: translateX(-50%) rotateY(0deg); }
+  25% { transform: translateX(-48%) rotateY(-3deg); }
+  75% { transform: translateX(-52%) rotateY(3deg); }
+}
+
+@keyframes head-watch {
+  0% { transform: translateX(-50%) rotateY(0deg); }
+  100% { transform: translateX(-50%) rotateY(10deg); }
+}
+
+@keyframes head-watch-right {
+  0% { transform: translateX(-50%) rotateY(0deg); }
+  100% { transform: translateX(-50%) rotateY(-10deg); }
+}
+
+.warrior-helmet {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #4a5568 0%, #2d3748 50%, #1a202c 100%);
+  border-radius: 35px 35px 20px 20px;
+  box-shadow:
+    inset 0 -5px 15px rgba(0,0,0,0.5),
+    0 5px 20px rgba(0,0,0,0.6),
+    0 0 30px rgba(74, 85, 104, 0.3);
+}
+
+/* Helmet crest */
+.warrior-helmet::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 50px;
+  background: linear-gradient(180deg, #c9a227 0%, #8b7315 100%);
+  border-radius: 6px 6px 0 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+/* Helmet decorative bands */
+.warrior-helmet::after {
+  content: '';
+  position: absolute;
+  top: 25px;
+  left: 10px;
+  width: 50px;
+  height: 8px;
+  background: linear-gradient(90deg, #c9a227 0%, #f4d03f 50%, #c9a227 100%);
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+}
+
+/* Face/visor area */
+.warrior-visor {
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 35px;
+  background: linear-gradient(180deg, #3a4a5c 0%, #1a2530 100%);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+}
+
+/* Eye slits in visor */
+.warrior-visor::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 6px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(20, 30, 40, 0.9) 20%,
+    rgba(30, 50, 70, 0.7) 50%,
+    rgba(20, 30, 40, 0.9) 80%,
+    transparent 100%);
+  border-radius: 3px;
+}
+
+/* Warrior Eyes - watching the input */
+.warrior-eyes {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 15;
+}
+
+.eye {
+  width: 6px;
+  height: 4px;
+  background: linear-gradient(180deg, #ff6b35 0%, #c9381c 100%);
+  border-radius: 50%;
+  animation: eye-flicker 3s ease-in-out infinite;
+  box-shadow:
+    0 0 8px #ff6b35,
+    0 0 15px #c9381c,
+    inset 0 0 3px rgba(255, 200, 150, 0.5);
+  transition: all 0.1s ease-out;
+}
+
+.eye.left-eye {
+  clip-path: ellipse(50% 50% at 60% 50%);
+}
+
+.eye.right-eye {
+  clip-path: ellipse(50% 50% at 40% 50%);
+}
+
+@keyframes eye-flicker {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 8px #ff6b35, 0 0 15px #c9381c;
+  }
+  45% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 12px #ff6b35, 0 0 25px #c9381c, 0 0 35px #ff4500;
+  }
+  55% {
+    opacity: 0.8;
+  }
+}
+
+/* Eye tracking animation - warriors watch you type */
+.warrior-left.watching .eye {
+  animation: eye-track-left 0.3s ease-out forwards;
+}
+
+.warrior-right.watching .eye {
+  animation: eye-track-right 0.3s ease-out forwards;
+}
+
+@keyframes eye-track-left {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(3px) translateY(1px); }
+  100% { transform: translateX(2px); }
+}
+
+@keyframes eye-track-right {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-3px) translateY(1px); }
+  100% { transform: translateX(-2px); }
+}
+
+/* Warrior Torso - Realistic Armor */
+.warrior-torso {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 140px;
+  background: linear-gradient(135deg,
+    #5a6b7c 0%,
+    #3d4a5c 30%,
+    #2d3748 60%,
+    #1a2530 100%);
+  border-radius: 20px 20px 15px 15px;
+  box-shadow:
+    inset 0 0 30px rgba(0,0,0,0.5),
+    0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* Chest plate details */
+.warrior-torso::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 100px;
+  background: linear-gradient(135deg,
+    #4a5a6c 0%,
+    #354555 50%,
+    #253545 100%);
+  border-radius: 15px 15px 10px 10px;
+  box-shadow:
+    inset 0 5px 15px rgba(0,0,0,0.4),
+    0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* Chest emblem */
+.warrior-torso::after {
+  content: '';
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 40px;
+  background: linear-gradient(135deg, #c9a227 0%, #8b7315 50%, #c9a227 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  box-shadow:
+    0 0 15px rgba(201, 162, 39, 0.5),
+    inset 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* Shoulder pads */
+.warrior-shoulder {
+  position: absolute;
+  top: 95px;
+  width: 50px;
+  height: 45px;
+  background: linear-gradient(135deg, #5a6b7c 0%, #3d4a5c 100%);
+  border-radius: 25px 25px 10px 10px;
+  box-shadow:
+    0 5px 15px rgba(0,0,0,0.4),
+    inset 0 -3px 10px rgba(0,0,0,0.3);
+}
+
+.warrior-shoulder.left {
+  left: 25px;
+}
+
+.warrior-shoulder.right {
+  right: 25px;
+}
+
+/* Shoulder spikes/decorations */
+.warrior-shoulder::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 25px;
+  background: linear-gradient(180deg, #4a5a6c 0%, #2d3a4a 100%);
+  border-radius: 10px 10px 5px 5px;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Warrior Arms */
+.warrior-arm {
+  position: absolute;
+  top: 140px;
+  width: 28px;
+  height: 100px;
+  background: linear-gradient(90deg, #4a5a6c 0%, #3d4a5c 50%, #2d3a4a 100%);
+  border-radius: 14px;
+  box-shadow:
+    0 3px 10px rgba(0,0,0,0.4),
+    inset 0 0 10px rgba(0,0,0,0.3);
+}
+
+.arm-left {
+  left: 45px;
+  transform: rotate(15deg);
+}
+
+.arm-right {
+  right: 45px;
+  transform: rotate(-15deg);
+}
+
+/* Arm armor plates */
+.warrior-arm::before {
+  content: '';
+  position: absolute;
+  top: 30px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(0,0,0,0.3) 50%,
+    transparent 100%);
+}
+
+/* Gauntlets */
+.warrior-arm::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: -4px;
+  width: 36px;
+  height: 25px;
+  background: linear-gradient(90deg, #3a4a5c 0%, #5a6b7c 50%, #3a4a5c 100%);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* Sword - More realistic */
+.sword {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-10deg);
+  width: 8px;
+  height: 140px;
+  background: linear-gradient(90deg,
+    #2d3748 0%,
+    #a8b5c0 30%,
+    #e8eef0 50%,
+    #a8b5c0 70%,
+    #2d3748 100%);
+  border-radius: 4px 4px 2px 2px;
+  box-shadow:
+    0 0 15px rgba(168, 181, 192, 0.4),
+    0 5px 20px rgba(0,0,0,0.3);
+}
+
+/* Sword crossguard */
+.sword::before {
+  content: '';
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 8px;
+  background: linear-gradient(90deg, #8b7355 0%, #c9a227 50%, #8b7355 100%);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* Sword pommel */
+.sword::after {
+  content: '';
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(135deg, #c9a227 0%, #8b7315 100%);
+  border-radius: 50%;
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.5),
+    inset 0 0 5px rgba(0,0,0,0.3);
+}
+
+/* Shield - More realistic */
+.shield {
+  position: absolute;
+  bottom: 40px;
+  right: 10px;
+  width: 55px;
+  height: 75px;
+  background: linear-gradient(135deg,
+    #5d4037 0%,
+    #4e342e 30%,
+    #3e2723 70%,
+    #2d1a17 100%);
+  border: 3px solid #5d4037;
+  border-radius: 15px 15px 25px 25px;
+  box-shadow:
+    0 5px 20px rgba(0,0,0,0.5),
+    inset 0 0 20px rgba(0,0,0,0.4);
+}
+
+/* Shield boss (center metal piece) */
+.shield::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 25px;
+  height: 35px;
+  background: linear-gradient(135deg, #6b7c8c 0%, #4a5a6c 50%, #3a4a5a 100%);
+  border-radius: 50%;
+  border: 2px solid #8b9cac;
+  box-shadow:
+    0 2px 10px rgba(0,0,0,0.4),
+    inset 0 0 8px rgba(0,0,0,0.3);
+}
+
+/* Shield decorative border */
+.shield::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  border: 2px solid rgba(198, 170, 115, 0.4);
+  border-radius: 12px 12px 22px 22px;
+}
+
+.vs-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.vs-text {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #e74c3c;
+  text-shadow: 0 0 20px #e74c3c, 0 0 40px #c0392b;
+  animation: vs-pulse 1s ease-in-out infinite;
+  letter-spacing: 5px;
+}
+
+@keyframes vs-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    text-shadow: 0 0 20px #e74c3c, 0 0 40px #c0392b;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+    text-shadow: 0 0 40px #e74c3c, 0 0 80px #c0392b, 0 0 120px #e74c3c;
+  }
+}
+
+.sparks {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+}
+
+.sparks::before,
+.sparks::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #f39c12;
+  border-radius: 50%;
+  animation: spark-fly 0.5s ease-out infinite;
+}
+
+.sparks::before {
+  left: 0;
+  top: 50%;
+}
+
+.sparks::after {
+  right: 0;
+  top: 50%;
+}
+
+@keyframes spark-fly {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(50px) scale(0);
+    opacity: 0;
+  }
+}
+
 /* Animated Background */
 .bg-animation {
   position: fixed;

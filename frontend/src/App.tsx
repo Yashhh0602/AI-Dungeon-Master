@@ -57,12 +57,19 @@ function App() {
   const [charName, setCharName] = useState('');
   const [charClass, setCharClass] = useState('warrior');
   const [background, setBackground] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCharName(e.target.value);
+    setIsTyping(true);
+    setTimeout(() => setIsTyping(false), 500);
+  };
 
   const startGame = async () => {
     if (!charName.trim()) return;
@@ -152,6 +159,54 @@ function App() {
           ))}
         </div>
         <div className="fog" />
+        <div className="warriors-faceoff">
+          <div className={`warrior warrior-left ${isTyping ? 'watching' : ''}`}>
+            <div className="warrior-body">
+              <div className="warrior-head">
+                <div className="warrior-helmet"></div>
+                <div className="warrior-visor"></div>
+                <div className="warrior-eyes">
+                  <div className="eye left-eye"></div>
+                  <div className="eye right-eye"></div>
+                </div>
+              </div>
+              <div className="warrior-shoulder left"></div>
+              <div className="warrior-shoulder right"></div>
+              <div className="warrior-torso"></div>
+              <div className="warrior-arm arm-left">
+                <div className="sword"></div>
+              </div>
+              <div className="warrior-arm arm-right">
+                <div className="shield"></div>
+              </div>
+            </div>
+          </div>
+          <div className={`warrior warrior-right ${isTyping ? 'watching' : ''}`}>
+            <div className="warrior-body">
+              <div className="warrior-head">
+                <div className="warrior-helmet"></div>
+                <div className="warrior-visor"></div>
+                <div className="warrior-eyes">
+                  <div className="eye left-eye"></div>
+                  <div className="eye right-eye"></div>
+                </div>
+              </div>
+              <div className="warrior-shoulder left"></div>
+              <div className="warrior-shoulder right"></div>
+              <div className="warrior-torso"></div>
+              <div className="warrior-arm arm-left">
+                <div className="sword"></div>
+              </div>
+              <div className="warrior-arm arm-right">
+                <div className="shield"></div>
+              </div>
+            </div>
+          </div>
+          <div className="vs-effect">
+            <div className="vs-text">VS</div>
+            <div className="sparks"></div>
+          </div>
+        </div>
         <div className="start-screen">
           <h1>AI Dungeon Master</h1>
           <p className="subtitle">A Fantasy RPG Adventure</p>
@@ -162,9 +217,10 @@ function App() {
               <input
                 type="text"
                 value={charName}
-                onChange={(e) => setCharName(e.target.value)}
+                onChange={handleNameChange}
                 placeholder="Enter your hero's name"
                 maxLength={20}
+                id="character-name-input"
               />
             </div>
 

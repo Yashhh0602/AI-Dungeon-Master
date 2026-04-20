@@ -11,7 +11,7 @@ class DungeonMaster:
 
     def __init__(self):
         self.ollama_url = "http://localhost:11434/api/chat"
-        self.model = "llama3.2"
+        self.model = "qwen2.5:1.5b"
 
     def _get_system_prompt(self) -> str:
         return """You are an expert Dungeon Master running a fantasy RPG adventure.
@@ -63,6 +63,8 @@ Remember: You're here to create a FUN, ENGAGING adventure."""
                 }
             )
             data = response.json()
+            if "message" not in data:
+                raise Exception(f"Ollama error: {data}")
             return data["message"]["content"]
 
     async def get_opening_narration(self, character_name: str, character_class: str, background: str) -> str:
