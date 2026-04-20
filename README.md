@@ -1,3 +1,5 @@
+<img width="1918" height="932" alt="waiting_reply" src="https://github.com/user-attachments/assets/53c6d9ef-f8d0-4fea-9524-dff713f2dbd2" />
+
 # AI Dungeon Master
 
 A fantasy RPG adventure game powered by AI. Explore a dynamic world, fight monsters, collect loot, and shape your own story with an AI Dungeon Master that responds to your choices.
